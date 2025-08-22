@@ -1,0 +1,735 @@
+<examples>
+# @describe All kinds of @arg
+
+# @cmd
+cmd() {
+    _debug "$@"
+}
+
+# @cmd
+# @alias a
+cmd_alias() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val
+cmd_arg() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val*
+cmd_multi_arg() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val+
+cmd_required_multi_arg() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val!
+cmd_required_arg() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val=xyz
+cmd_arg_with_default() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val=`_default_fn`
+cmd_arg_with_default_fn() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val[x|y|z]
+cmd_arg_with_choices() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val[=x|y|z]
+cmd_arg_with_choices_and_default() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val*[x|y|z]
+cmd_multi_arg_with_choices() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val+[x|y|z]
+cmd_required_multi_arg_with_choices() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val[`_choice_fn`]
+cmd_arg_with_choice_fn() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val[?`_choice_fn`]
+cmd_arg_with_choice_fn_and_skip_check() {
+    _debug "$@"
+}
+
+
+# @cmd
+# @arg val![`_choice_fn`]
+cmd_required_arg_with_choice_fn() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val*[`_choice_fn`]
+cmd_multi_arg_with_choice_fn() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val+[`_choice_fn`]
+cmd_required_multi_arg_with_choice_fn() {
+    _debug "$@"
+}
+
+
+# @cmd
+# @arg val*,[`_choice_fn`]
+cmd_multi_arg_with_choice_fn_and_comma_sep() {
+    _debug "$@"
+}
+
+
+# @cmd
+# @arg vals~
+cmd_terminaled() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val <FILE>
+cmd_arg_with_notation() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val1*
+# @arg val2*
+cmd_two_multi_args() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val1!
+# @arg val2+
+cmd_one_required_second_required_multi() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val1!
+# @arg val2!
+# @arg val3!
+cmd_three_required_args() {
+    _debug "$@"
+}
+
+_debug() {
+    ( set -o posix ; set ) | grep ^argc_
+    echo "$argc__fn" "$@"
+}
+
+_default_fn() {
+	echo abc
+}
+
+_choice_fn() {
+	echo abc
+	echo def
+	echo ghi
+}
+
+eval "$(argc --argc-eval "$0" "$@")"
+# @cmd How to bind env to param
+
+# @flag --fa1 $$
+# @flag --fa2 $$
+# @flag --fa3 $FA
+# @flag --fc* $$
+# @flag --fd $$
+flags() {
+    _debug "$@"
+}
+
+# @cmd
+# @option --oa1 $$
+# @option --oa2 $$
+# @option --oa3 $OA
+# @option --ob! $OB
+# @option --oc*, $$
+# @option --oda=a $$
+# @option --odb=`_default_fn` $$
+# @option --oca[a|b] $$
+# @option --occ*[a|b] $$
+# @option --ofa[`_choice_fn`] $$
+# @option --ofd*,[`_choice_fn`] $$
+# @option --oxa~ $$
+options() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val $$
+cmd_arg1() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val $VA
+cmd_arg2() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val=xyz $$
+cmd_arg_with_default() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val[x|y|z] $$
+cmd_arg_with_choice() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val[`_choice_fn`] $$
+cmd_arg_with_choice_fn() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val*,[`_choice_fn`] $$
+cmd_multi_arg_with_choice_fn_and_comma_sep() {
+    _debug "$@"
+}
+
+# @cmd
+# @arg val1! $$
+# @arg val2! $$
+# @arg val3! $$
+cmd_three_required_args() {
+    _debug "$@"
+}
+
+# @cmd
+# @option --OA $$ <XYZ>
+# @arg val $$ <XYZ>
+cmd_for_notation() {
+    _debug "$@"
+}
+
+_debug() {
+    ( set -o posix ; set ) | grep ^argc_
+    echo "$argc__fn" "$@"
+}
+
+_default_fn() {
+    echo argc
+}
+
+_choice_fn() {
+	echo abc
+	echo def
+	echo ghi
+}
+
+eval "$(argc --argc-eval "$0" "$@")"# @describe How to use `@meta combine-shorts`
+#
+# Mock rm cli
+# Examples:
+#   prog -rf dir1 dir2
+# 
+# @meta combine-shorts
+# @flag -r --recursive remove directories and their contents recursively
+# @flag -f --force ignore nonexistent files and arguments, never prompt
+# @arg path* the path to remove
+              
+eval "$(argc --argc-eval "$0" "$@")"
+
+_debug() {
+    ( set -o posix ; set ) | grep ^argc_
+    echo "$argc__fn" "$@"
+}
+
+_debug# describe How to use `@meta default-subcommand`
+
+# @cmd Upload a file
+# @meta default-subcommand
+upload() {
+    echo upload "$@"
+}
+
+# @cmd Download a file
+download() {
+    echo download "$@"
+}
+
+eval "$(argc --argc-eval "$0" "$@")"# @describe A demo cli
+
+# @cmd Upload a file
+# @alias    u
+# @arg target!                      File to upload
+upload() {
+    echo "cmd                       upload"
+    echo "arg:  target              $argc_target"
+}
+
+# @cmd Download a file
+# @alias    d
+# @flag     -f --force              Override existing file
+# @option   -t --tries <NUM>        Set number of retries to NUM
+# @arg      source!                 Url to download from
+# @arg      target                  Save file to
+download() {
+    echo "cmd:                      download"
+    echo "flag:   --force           $argc_force"
+    echo "option: --tries           $argc_tries"
+    echo "arg:    source            $argc_source"
+    echo "arg:    target            $argc_target"
+}
+
+eval "$(argc --argc-eval "$0" "$@")"
+# @describe All kinds of @env
+
+# @meta dotenv
+# @env TEST_EA                   optional
+# @env TEST_EB!                  required
+# @env TEST_EDA=a                default
+# @env TEST_EDB=`_default_fn`    default from fn
+# @env TEST_ECA[a|b]             choice
+# @env TEST_ECB[=a|b]            choice + default
+# @env TEST_EFA[`_choice_fn`]    choice from fn
+
+# @cmd
+# @env TEST_EA                   override
+# @env TEST_NEW                  append
+run() {
+    _debug
+}
+
+main() {
+    _debug
+}
+
+_debug() {
+    printenv | grep ^TEST_ | sort
+}
+
+_default_fn() {
+    echo argc
+}
+
+_choice_fn() {
+    echo abc
+    echo def
+	echo ghi
+}
+
+eval "$(argc --argc-eval "$0" "$@")"#!/usr/bin/env node
+set -e
+
+# @describe How to use argc hooks
+#
+# Argc supports two hooks:
+#   _argc_before: call before running the command function (after initialized variables)
+#   _argc_after: call after running the command function
+
+_argc_before() {
+  echo before
+}
+
+_argc_after() {
+  echo after
+}
+
+main() {
+  echo main
+}
+
+eval "$(argc --argc-eval "$0" "$@")"
+
+# @describe How to use `@meta inherit-flag-options`
+#
+# Mock systemctl cli
+# Examples:
+#   prog --user start my-service
+#   prog --user stop my-service
+# 
+# @meta inherit-flag-options
+# @flag --user Connect to user service manager
+# @flag --no-pager Do not pipe output into a pager
+# @option -t --type List units of a particular type
+# @option --state List units with particular LOAD or SUB or ACTIVE state
+
+# @cmd Start (activate) one or more units
+# @arg UNIT... The unit files to start
+start() {
+    :;
+}
+
+# @cmd Stop (deactivate) one or more units
+# @arg UNIT... The unit files to stop
+stop() {
+    :;
+}
+
+eval "$(argc --argc-eval "$0" "$@")"# @describe How to use multiline help text
+#
+# Extra lines after the comment tag accepts description, which don't start with an `@`,
+# are treated as the long description. A line which is not a comment ends the block.
+
+# @meta version 1.0.0
+
+# @option --foo[=default|full|auto] Sunshine gleams over hills afar, bringing warmth and hope to every soul, yet challenges await as we journey forth, striving for dreams and joy in abundance. Peaceful rivers whisper secrets gently heard.
+#  * default: enables recommended style components.
+#  * full: enables all available components.
+#  * auto: same as 'default', unless the output is piped.
+# @option --bar Eager dogs jump quickly over the lazy brown fox, swiftly running past green fields, but only until the night turns dark. Bright stars sparkle clearly above us now. 
+# @arg target Eager dogs jump over quick, lazy foxes behind brown wooden fences around dark, old houses. Happy children laugh as they run through golden wheat fields under blue, sunny skies.
+# Use '-' for standard input.
+# @cmd Eager dogs jump quickly over lazy foxes, creating wonderful chaos amid peaceful fields, but few noticed their swift escape beyond tall fences. Swift breezes sway gently through green.
+#
+# Extra lines after the comment tag accepts description, which don't start with an `@`,
+# are treated as the long description. A line which is not a comment ends the block.
+cmd() { :; }
+
+eval "$(TERM_WIDTH=${TERM_WIDTH:-`tput cols`} argc --argc-eval "$0" "$@")"# @describe How to use nested subcommands
+# 
+# Mock docker cli
+
+# @cmd
+builder() { :; }
+# @cmd
+builder::ls() { :; }
+# @cmd
+builder::prune() { :; }
+# @cmd
+builder::rm() { :; }
+# @cmd
+builder::imagetools() { :; }
+# @cmd
+builder::imagetools::create() { :; }
+# @cmd
+builder::imagetools::inspect() { :; }
+
+eval "$(argc --argc-eval "$0" "$@")"# @describe All kinds of @option and @flag
+
+# @meta combine-shorts
+
+# @cmd All kind of options
+# @option    --oa                   
+# @option -b --ob                   short
+# @option -c                        short only
+# @option    --oc!                  required
+# @option    --od*                  multi-occurs
+# @option    --oe+                  required + multi-occurs
+# @option    --of*,                 multi-occurs + comma-separated list
+# @option    --ona <PATH>           value notation
+# @option    --onb <FILE> <FILE>    two-args value notations
+# @option    --onc <CMD> <FILE+>    unlimited-args value notations
+# @option    --oda=a                default
+# @option    --odb=`_default_fn`    default from fn
+# @option    --oca[a|b]             choice
+# @option    --ocb[=a|b]            choice + default
+# @option    --occ*[a|b]            multi-occurs + choice
+# @option    --ofa[`_choice_fn`]    choice from fn
+# @option    --ofb[?`_choice_fn`]   choice from fn + no validation
+# @option    --ofc*[`_choice_fn`]   multi-occurs + choice from fn
+# @option    --ofd*,[`_choice_fn`]  multi-occurs + choice from fn + comma-separated list
+# @option    --oxa~                 capture all remaining args
+options() {
+    _debug "$@"
+}
+
+# @cmd All kind of flags
+# @flag     --fa 
+# @flag  -b --fb         short
+# @flag  -c              short only
+# @flag     --fd*        multi-occurs
+# @flag  -e --fe*        short + multi-occurs
+flags() {
+    _debug "$@"
+}
+
+# @cmd Flags or options with single hyphen
+# @flag    -fa
+# @flag -b -fb
+# @flag    -fd*
+# @option  -oa
+# @option  -od*
+# @option  -ona <PATH>
+# @option  -oca[a|b]
+# @option  -ofa[`_choice_fn`]
+options-one-hyphen() {
+    _debug "$@"
+}
+
+# @cmd Value notation modifier
+# @option --oa <VALUE*>           multi values, zero or more
+# @option --ob <VALUE+>           multi values, one or more
+# @option --oc <VALUE?>           zero or one
+options-notation-modifier() {
+    _debug "$@"
+}
+
+# @cmd All kind of options
+# @option     +oa                   
+# @option +b  +ob                   short
+# @option +c                        short only
+# @option     +oc!                  required
+# @option     +od*                  multi-occurs
+# @option     +oe+                  required + multi-occurs
+# @option     +ona <PATH>           value notation
+# @option     +onb <FILE> <FILE>    two-args value notations
+# @option     +onc <CMD> <FILE+>    unlimited-args value notations
+# @option     +oda=a                default
+# @option     +odb=`_default_fn`    default from fn
+# @option     +oca[a|b]             choice
+# @option     +ocb[=a|b]            choice + default
+# @option     +occ*[a|b]            multi-occurs + choice
+# @option     +ocd+[a|b]            required + multi-occurs + choice
+# @option     +ofa[`_choice_fn`]    choice from fn
+# @option     +ofb[?`_choice_fn`]   choice from fn + no validation
+# @option     +ofc*[`_choice_fn`]   multi-occurs + choice from fn
+# @option     +ofd*,[`_choice_fn`]  multi-occurs + choice from fn + comma-separated list
+# @option     +oxa~                 capture all remaining args
+options-plus() {
+    _debug "$@"
+}
+
+# @cmd All kind of flags
+# @flag      +fa 
+# @flag  +b  +fb         short
+# @flag  +c              short only
+# @flag      +fd*        multi-occurs
+# @flag  +e  +fe*        short + multi-occurs
+flags-plus() {
+    _debug "$@"
+}
+
+# @cmd Mixed `-` and `+` options
+# @option +a -a
+# @option -b +b
+# @option +c --c
+options-mixed() {
+    _debug "$@"
+}
+
+# @cmd Prefixed option
+# @option -X-*[`_choice_fn`]       prefixied + multi-occurs + choice from fn
+# @option +X-*[`_choice_fn`]       prefixied + multi-occurs + choice from fn
+options-prefixed() {
+    _debug "$@"
+}
+
+# @cmd Prefixed option
+# @option -f --follow:[a|b]       assigned + choice
+options-assigned() {
+    _debug "$@"
+}
+
+# @cmd
+# @flag   -a
+# @flag      --fa
+# @flag   -f --fb*
+# @flag      -sa
+# @flag      -sb*
+# @option -e
+# @option    --oa
+# @option    --ob*
+# @option    --oc <DIR>
+# @option -o --od <FILE> <FILE>
+# @option    --oe*,
+# @option    --ca[x|y|z]
+# @option    --cc[`_choice_fn`]
+# @option    --cd[?`_choice_fn`]
+# @option    --ce*[`_choice_fn`]
+# @option -s -soa
+test1() {
+    _debug "$@"
+}
+
+# @cmd
+# @option -a --oa!
+# @option    --ob+
+# @option    --oc+,
+# @option    --oca![`_choice_fn`]
+# @option    --ocb+[`_choice_fn`]
+# @option    --occ+,[`_choice_fn`]
+test2() {
+    _debug "$@"
+}
+
+# @cmd
+# @option    --oe=val
+# @option    --of=`_default_fn`
+# @option    --cb[=x|y|z]
+test3() {
+    _debug "$@"
+}
+
+_debug() {
+    ( set -o posix ; set ) | grep ^argc_
+    echo "$argc__fn" "$@"
+}
+
+_default_fn() {
+    echo argc
+}
+
+_choice_fn() {
+    echo abc
+    echo def
+	echo ghi
+}
+
+eval "$(argc --argc-eval "$0" "$@")"#/usr/bin/env bash
+set -e
+
+# @describe How to use `--argc-parallel`
+#
+# Compared with GNU parallel, the biggest advantage of argc-parallel is that it preserves `argc_*` variables.
+
+# @cmd
+cmd1() {
+    sleep 3
+    echo cmd1 "$@"
+    echo argc_oa: $argc_oa
+    echo cmd1 stderr >&2
+}
+
+# @cmd
+cmd2() {
+    sleep 3
+    echo cmd2 "$@"
+    echo argc_oa: $argc_oa
+    echo cmd2 stderr >&2
+}
+
+# @cmd
+# @option --oa
+foo() {
+    argc --argc-parallel "$0" cmd1 abc ::: func ::: cmd2 
+}
+
+# @cmd
+# @option --oa
+bar() {
+    cmd1 abc
+    func
+    cmd2
+}
+
+func() {
+    echo func
+}
+
+eval "$(argc --argc-eval "$0" "$@")"# Argc Examples
+
+Each of these examples demonstrates one aspect or feature of argc.
+
+- [demo.sh](./demo.sh) - A simple demo script.
+- [multiline.sh](./multiline.sh) - how to use multiline help text.
+- [nested-commands](./nested-commands.sh) - how to use nested commands.
+- [hooks.sh](./hooks.sh) - how to use argc hooks.
+- [strict.sh](./strict.sh) - how to use strict mode
+- [parallel.sh](./parallel.sh) - how to use `--argc-parallel`.
+
+- [args.sh](./args.sh) - all kinds of `@arg`.
+- [options.sh](./options.sh) - all kinds of `@option` and `@flag`.
+- [bind-env](./bind-envs.sh) - how to bind env to param.
+- [envs.sh](./envs.sh) - all kind of `@env`.
+
+- [default-subcommand](./default-subcommand.sh) - how to use `@meta default-subcommand`.
+- [require-tools](./require-tools.sh) - how to use `@meta require-tools`.
+- [inherit-flag-options](./inherit-flag-options.sh) - how to use `@meta inherit-flag-options`.
+- [combine-short](./combine-shorts.sh) - how to use `@meta combine-shorts`.
+- [symbol](./symbol.sh): how to use `@meta symbol`.# @describe how to use `@meta require-tools`
+
+# @meta require-tools awk,sed
+
+# @cmd
+# @meta require-tools git
+require-git() {
+    :;
+}
+
+# @cmd
+# @meta require-tools not-found
+require-not-found() {
+    :;
+}
+
+eval "$(argc --argc-eval "$0" "$@")"
+#!/usr/bin/env bash
+
+set -eu
+
+
+# @flag      --fa 
+# @option    --oa                   
+# @option    --of*,                 multi-occurs + comma-separated list
+# @option    --oda=a                default
+# @option    --oca[a|b]             choice
+# @option    --ofa[`_choice_fn`]    choice from fn
+# @option    --oxa~                 capture all remaining args
+
+main() {
+    ( set -o posix ; set ) | grep ^argc_
+    echo "${argc__fn:-}" "$@"
+}
+
+_choice_fn() {
+    echo abc
+    echo def
+	echo ghi
+}
+
+eval "$(argc --argc-eval "$0" "$@")"# @describe How to use `@meta symbol`
+#
+# Mock cargo cli
+# @meta symbol +toolchain[`_choice_toolchain`]
+
+# @cmd Compile the current package
+# @alias b 
+build () {
+    :;
+}
+
+# @cmd Analyze the current package and report errors, but don't build object files
+# @alias c
+check() {
+    :;
+}
+
+_choice_toolchain() {
+    cat <<-'EOF'
+stable
+beta
+nightly
+EOF
+}
+
+eval "$(argc --argc-eval "$0" "$@")"</examples>
