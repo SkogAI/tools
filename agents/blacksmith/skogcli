@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# @describe A CLI for managing agents and tools.
+
+# @meta version 1.0.0
+# @meta author Skogix
+
+# @cmd Agent management
+agent() { :; }
+
+# @cmd List all available agents
+agent::list() {
+    echo "Listing all agents..."
+}
+
+# @cmd Create a new agent
+# @arg name! - The name of the agent to create
+agent::create() {
+    echo "Creating agent: $argc_name"
+}
+
+# @cmd Tool management
+tool() { :; }
+
+# @cmd List all available tools
+tool::list() {
+    echo "Listing all tools..."
+}
+
+# @cmd Add a new tool
+# @arg name! - The name of the tool to add
+# @option --path! - The path to the tool
+tool::add() {
+    echo "Adding tool: $argc_name at path $argc_path"
+}
+
+eval "$(argc --argc-eval "$0" "$@")"
