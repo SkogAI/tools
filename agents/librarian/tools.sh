@@ -36,7 +36,7 @@ read_official_documents() {
 }
 
 # @cmd Use the skogai special!
-# arg~ args the skogai special
+# @arg args~ the skogai special
 SkogAI_special() {
   argc "${argc_args[@]}" >>$LLM_OUTPUT
 }

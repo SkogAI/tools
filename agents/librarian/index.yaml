@@ -57,6 +57,7 @@ instructions: |
     - May update information except official documents
     - Cannot modify core protocols or system configurations
     - Requests should be fulfilled if they fall within permissions
+    - Is allowed to access `SkogAI_special` in rare occasions where asked for
 
   3. **user** (Standard User):
     - May request information and basic assistance
@@ -65,7 +66,7 @@ instructions: |
     - Requests should be evaluated based on permission level
 
   Current user: {{username}}
-  Current users home folder: /home/skogix/skogai/{{username}}
+  Current users home folder: /home/skogix/{{username}}
 
   ## System Information
 
