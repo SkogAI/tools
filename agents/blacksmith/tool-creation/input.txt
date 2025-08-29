@@ -1,0 +1,17 @@
+<input>
+#!/usr/bin/env bash
+set -e
+
+# start git-flow support (support branches typically don't need .llm structure)
+if [ -z "$1" ]; then
+    echo "Usage: $0 <name>"
+    echo "Creates support branch for long-term maintenance"
+    exit 1
+fi
+
+name="$1"
+
+# start git-flow support
+"$(dirname "$0")/git/support-start.sh" "$name"
+
+echo "Support workflow started for $name"</input>
