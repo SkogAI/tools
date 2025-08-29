@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fizz",
+    "description": "Classic FizzBuzz implementation - prints numbers 1 to max, replacing multiples of 3 with 'Fizz', multiples of 5 with 'Buzz', and multiples of both with 'FizzBuzz'",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "string"
+        }
+      },
+      "required": []
+    }
+  }
+]

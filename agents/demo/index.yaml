@@ -24,6 +24,7 @@ instructions: |
 variables:
   - name: username
     description: Your user name
+    default: skogix
 conversation_starters:
   - What is my username?
   - What is my current shell?
@@ -33,3 +34,4 @@ conversation_starters:
 documents:
   - README.md
   - https://github.com/sigoden/llm-functions/blob/main/README.md
+

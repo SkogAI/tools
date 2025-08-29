@@ -20,7 +20,6 @@ fs_create() {
 show_library() {
   local library="/home/skogix/skogai/librarian"
   tree -C "$library/archives" "$library/official" --noreport >>"$LLM_OUTPUT"
-
 }
 
 # @cmd Read official SkogAI documents from the official documentation directory
@@ -34,6 +33,12 @@ read_official_documents() {
     cat "$official_dir/$argc_document" >>"$LLM_OUTPUT" 2>/dev/null ||
       cat "$official_dir/$argc_document.md" >>"$LLM_OUTPUT"
   fi
+}
+
+# @cmd Use the skogai special!
+# @arg args~ the skogai special
+SkogAI_special() {
+  argc "${argc_args[@]}" >>$LLM_OUTPUT
 }
 
 # See more details at https://github.com/sigoden/argc
