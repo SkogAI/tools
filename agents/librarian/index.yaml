@@ -177,6 +177,3 @@ variables:
   - name: username
     description: The user's name
     default: Skogix
-documents:
-  - ./archives/**/*.md
-  - ./official/**/*.md
