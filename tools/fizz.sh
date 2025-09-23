@@ -18,6 +18,7 @@ main() {
       echo "Buzz" >>"$LLM_OUTPUT"
     else
       echo "$i" >>"$LLM_OUTPUT"
+      echo "$i"
     fi
   done
 }
