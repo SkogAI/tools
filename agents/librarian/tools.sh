@@ -18,7 +18,7 @@ fs_create() {
 # @cmd Show the library
 # @option --username! The path where the file should be created
 show_library() {
-  local library="/home/skogix/skogai/librarian"
+  local library="/home/skogix/skogai/docs/"
   tree -C "$library/archives" "$library/official" --noreport >>"$LLM_OUTPUT"
 }
 
@@ -33,12 +33,6 @@ read_official_documents() {
     cat "$official_dir/$argc_document" >>"$LLM_OUTPUT" 2>/dev/null ||
       cat "$official_dir/$argc_document.md" >>"$LLM_OUTPUT"
   fi
-}
-
-# @cmd Use the skogai special!
-# @arg args~ the skogai special
-SkogAI_special() {
-  argc "${argc_args[@]}" >>$LLM_OUTPUT
 }
 
 # See more details at https://github.com/sigoden/argc

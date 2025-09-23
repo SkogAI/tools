@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "librarian": {
+      "command": "npx",
+      "args": [
+        "mcp-llm-functions",
+        "/home/skogix/skogai/tools",
+        "librarian"
+      ]
+    },
+    "claude": {
+      "command": "npx",
+      "args": [
+        "mcp-llm-functions",
+        "/home/skogix/skogai/tools",
+        "claude"
+      ]
+    },
+    "skogai-memory": {
+      "command": "uvx",
+      "args": [
+        "basic-memory",
+        "mcp"
+      ]
+    }
+  }
+}
+
