@@ -17,3 +17,4 @@ package-lock.json
 *.lock
 /mcp.json
 .llm/version-control/feature/tmp/changes.diff
+.aider*
