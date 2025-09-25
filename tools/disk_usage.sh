@@ -2,7 +2,7 @@
 set -e
 
 # describe Analyze disk usage for a filesystem path
-# @arg path! The filesystem path to analyze
+# @arg path!=. The filesystem path to analyze
 # @option --limit=10 Maximum number of items to return
 
 # @env LLM_OUTPUT=/dev/stdout The output path
