@@ -2,6 +2,7 @@
 set -e
 
 # @env LLM_OUTPUT=/dev/stdout The output path
+# @env SKOGAI=/home/skogix/skogai SkogAI root dir
 
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
@@ -16,9 +17,8 @@ fs_create() {
 }
 
 # @cmd Show the library
-# @option --username! The path where the file should be created
 show_library() {
-  local library="/home/skogix/skogai/docs/"
+  local library="$SKOGAI/docs/"
   tree -C "$library/archives" "$library/official" --noreport >>"$LLM_OUTPUT"
 }
 
