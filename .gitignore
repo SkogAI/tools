@@ -18,3 +18,4 @@ package-lock.json
 /mcp.json
 .llm/version-control/feature/tmp/changes.diff
 .aider*
+agents/librarian/.claude/data/sessions
