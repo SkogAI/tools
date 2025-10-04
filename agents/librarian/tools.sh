@@ -16,12 +16,6 @@ fs_create() {
   echo "File created: $argc_path" >>"$LLM_OUTPUT"
 }
 
-# @cmd Show the library
-show_library() {
-  local library="$SKOGAI/docs/"
-  tree -C "$library/archives" "$library/official" --noreport >>"$LLM_OUTPUT"
-}
-
 # @cmd Read official SkogAI documents from the official documentation directory
 # @option --document! The name or path of the official document to read (use "list" to see all)
 read_official_documents() {
