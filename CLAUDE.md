@@ -9,6 +9,7 @@
 @docs/command-runner.md
 @docs/specification.md
 @docs/variables.md
+@docs/bash-best-practices.md
 
 ## Quick Reference
 
