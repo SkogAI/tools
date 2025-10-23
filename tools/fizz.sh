@@ -2,12 +2,11 @@
 set -e
 
 # @describe Classic FizzBuzz implementation - prints numbers 1 to max, replacing multiples of 3 with 'Fizz', multiples of 5 with 'Buzz', and multiples of both with 'FizzBuzz'
-# @option --max=15
-
 # @env LLM_OUTPUT=/dev/stdout The output path
+# @option --int![`_choice_int`] The amounts of numbers to print
 
 main() {
-  local max=${argc_max}
+  local max=${argc_int:-15}
 
   for ((i = 1; i <= max; i++)); do
     if ((i % 15 == 0)); then
@@ -18,9 +17,12 @@ main() {
       echo "Buzz" >>"$LLM_OUTPUT"
     else
       echo "$i" >>"$LLM_OUTPUT"
-      echo "$i"
     fi
   done
+}
+
+_choice_int() {
+  seq 1 100
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

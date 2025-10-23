@@ -1,17 +1,19 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Documentation
 
 @docs/agent.md
 @docs/argcfile.md
 @docs/tool.md
 @docs/environment-variables.md
+@docs/command-runner.md
+@docs/specification.md
+@docs/variables.md
 
 ## Quick Reference
 
 ### Core Commands
+
 ```bash
 argc build          # Build all tools and agents
 argc check          # Check environment and dependencies
@@ -22,6 +24,7 @@ argc run@agent <agent_name> <action> '{"param": "value"}'
 ```
 
 ### Key Concepts
+
 - **Tools**: Standalone functions in `./tools/` (bash/js/python)
 - **Agents**: GPT-like combinations of prompts + tools in `./agents/<name>/`
 - **MCP Bridge**: Connect external MCP servers via `./mcp.json`

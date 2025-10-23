@@ -1,6 +1,7 @@
 import os
 from typing import List, Literal, Optional
 
+
 def run(
     string: str,
     string_enum: Literal["foo", "bar"],

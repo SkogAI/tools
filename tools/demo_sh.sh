@@ -14,7 +14,7 @@ set -e
 # @env LLM_OUTPUT=/dev/stdout The output path
 
 main() {
-    cat <<EOF >> "$LLM_OUTPUT"
+  cat <<EOF >>"$LLM_OUTPUT"
 string: ${argc_string}
 string_enum: ${argc_string_enum}
 string_optional: ${argc_string_optional}
