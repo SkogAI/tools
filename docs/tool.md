@@ -24,10 +24,7 @@ The following JSON schema includes various types of properties. We will use this
       },
       "string_enum": {
         "type": "string",
-        "enum": [
-          "foo",
-          "bar"
-        ],
+        "enum": ["foo", "bar"],
         "description": "Define a required string property with enum"
       },
       "string_optional": {
@@ -77,18 +74,18 @@ The following JSON schema includes various types of properties. We will use this
 
 Use `# @describe`, `# @option`, and `# @flag` comments to define your tool's parameters.
 
-* `# @describe <description>`: A brief description of your tool's functionality.  This is required.
+- `# @describe <description>`: A brief description of your tool's functionality. This is required.
 
-* `# @option --<option-name>[!<type>][<constraints>] <description>`:  Defines an option.
-    * `--<option-name>`: The name of the option (use kebab-case).
-    * `!`: Indicates a required option.
-    * `<type>`:  The data type (e.g., `INT`, `NUM`, `<enum>`).  If omitted, defaults to `STRING`.
-    * `<constraints>`:  Any constraints (e.g., `[foo|bar]` for an enum).
-    * `<description>`: A description of the option.
+- `# @option --<option-name>[!<type>][<constraints>] <description>`: Defines an option.
+  - `--<option-name>`: The name of the option (use kebab-case).
+  - `!`: Indicates a required option.
+  - `<type>`: The data type (e.g., `INT`, `NUM`, `<enum>`). If omitted, defaults to `STRING`.
+  - `<constraints>`: Any constraints (e.g., `[foo|bar]` for an enum).
+  - `<description>`: A description of the option.
 
-* `# @flag --<flag-name> <description>`: Defines a boolean flag.
-    * `--<flag-name>`: The name of the flag (use kebab-case).
-    * `<description>`: A description of the flag.
+- `# @flag --<flag-name> <description>`: Defines a boolean flag.
+  - `--<flag-name>`: The name of the flag (use kebab-case).
+  - `<description>`: A description of the flag.
 
 **Example ([tools/demo_sh.sh](https://github.com/sigoden/llm-functions/blob/main/tools/demo_sh.sh)):**
 
@@ -119,82 +116,13 @@ eval "$(argc --argc-eval "$0" "$@")"
 
 Use JSDoc-style comments to define your tool's parameters. The `@typedef` block defines the argument object, and each property within that object represents a parameter.
 
-* `/** ... */`: JSDoc comment block containing the description and parameter definitions.
-* `@typedef {Object} Args`: Defines the type of the argument object.
-* `@property {<type>} <name> <description>`: Defines a property (parameter) of the `Args` object.
-    * `<type>`: The data type (e.g., `string`, `boolean`, `number`, `string[]`, `{foo|bar}`).
-    * `<name>`: The name of the parameter.
-    * `<description>`: A description of the parameter.
-    * `[]`: Indicates an optional parameter.
-
-**Example ([tools/demo_js.js](https://github.com/sigoden/llm-functions/blob/main/tools/demo_js.js)):**
-
-```js file=tools/demo_js.js
-/**
- * Demonstrate how to create a tool using Javascript and how to use comments.
- * @typedef {Object} Args
- * @property {string} string - Define a required string property
- * @property {'foo'|'bar'} string_enum - Define a required string property with enum
- * @property {string} [string_optional] - Define a optional string property
- * @property {boolean} boolean - Define a required boolean property
- * @property {Integer} integer - Define a required integer property
- * @property {number} number - Define a required number property
- * @property {string[]} array - Define a required string array property
- * @property {string[]} [array_optional] - Define a optional string array property
- * @param {Args} args
- */
-exports.run = function (args) {
-  // ... your JavaScript code ...
-}
-```
-
-Of course, you can also use ESM `export` expressions to export functions.
-```js
-export function run() {
-  // ... your JavaScript code ...
-}
-```
-
-### Python
-
-Use type hints and docstrings to define your tool's parameters.
-
-* `def run(...)`: Function definition.
-* `<type> <parameter_name>: <description>`: Type hints with descriptions in the docstring.
-    * `<type>`: The data type (e.g., `str`, `bool`, `int`, `float`, `List[str]`, `Literal["foo", "bar"]`).
-    * `<parameter_name>`: The name of the parameter.
-    * `<description>`: Description of the parameter.
-* `Optional[...]`: Indicates an optional parameter.
-
-**Example ([tools/demo_py.py](https://github.com/sigoden/llm-functions/blob/main/tools/demo_py.py)):**
-
-```py file=tools/demo_py.py
-def run(
-    string: str,
-    string_enum: Literal["foo", "bar"],
-    boolean: bool,
-    integer: int,
-    number: float,
-    array: List[str],
-    string_optional: Optional[str] = None,
-    array_optional: Optional[List[str]] = None,
-):
-    """Demonstrate how to create a tool using Python and how to use comments.
-    Args:
-        string: Define a required string property
-        string_enum: Define a required string property with enum
-        boolean: Define a required boolean property
-        integer: Define a required integer property
-        number: Define a required number property
-        array: Define a required string array property
-        string_optional: Define a optional string property
-        array_optional: Define a optional string array property
-    """
-    # ... your Python code ...
-```
-## Common tools
-
-Common tools can be found in `tools/<tool-name>.{sh,js,py}`. Each script defines a single tool.
+- `/** ... */`: JSDoc comment block containing the description and parameter definitions.
+- `@typedef {Object} Args`: Defines the type of the argument object.
+- `@property {<type>} <name> <description>`: Defines a property (parameter) of the `Args` object.
+  - `<type>`: The data type (e.g., `string`, `boolean`, `number`, `string[]`, `{foo|bar}`).
+  - `<name>`: The name of the parameter.
+  - `<description>`: A description of the parameter.
+  - `[]`: Indicates an optional parameter.
 
 ## Agent tools
 
@@ -211,7 +139,7 @@ git_status() {
 }
 
 # @cmd Shows differences between branches or commits
-# @option --target!   Shows differences between branches or commits 
+# @option --target!   Shows differences between branches or commits
 git_diff() {
     # ... your bash code ...
 }
@@ -221,43 +149,6 @@ eval "$(argc --argc-eval "$0" "$@")"
 
 > In `tools/<tool-name>.sh`, we use the `@describe` comment tag and a single `main` function, since it has only one function and no subcommands.
 > In `agent/<agent-name>/tools.sh`, we use the `@cmd` comment tag and named functions, since it can have multiple tool functions.
-
-### JavaScript
-
-```js file=agents/git/tools.js
-/**
- * Shows the working tree status
- */
-exports.git_status = function() {
-  // ... your JavaScript code ...
-}
-
-/**
- * Shows differences between branches or commits
- * @typedef {Object} Args
- * @property {string} target - Shows differences between branches or commits 
- * @param {Args} args
- */
-exports.git_diff = function() {
-  // ... your JavaScript code ...
-}
-```
-
-### Python
-
-```py file=agents/git/tools.py
-def git_status():
-    """Shows the working tree status"""
-    # ... your Python code ...
-
-
-def git_diff(target: str):
-    """Shows differences between branches or commits
-    Args:
-      target: Shows differences between branches or commits 
-    """
-    # ... your Python code ...
-```
 
 ## Quickly Create Tools
 
@@ -286,6 +177,7 @@ The suffixes attached to the tool's parameters define their characteristics:
 AI is smart enough to automatically create tool scripts for us. We just need to provide the documentation and describe the requirements well.
 
 Use aichat to create a common tool script:
+
 ```
 aichat -f docs/tool.md <<-'EOF'
 create tools/get_youtube_transcript.py
@@ -298,6 +190,7 @@ EOF
 ```
 
 Use aichat to create a agent tools script:
+
 ```
 aichat -f docs/agent.md -f docs/tool.md <<-'EOF'
 
@@ -326,3 +219,4 @@ tools.py:
     num_skips (default: 1): Number of tracks to skip
 EOF
 ```
+
