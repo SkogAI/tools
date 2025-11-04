@@ -20,13 +20,12 @@ fs_create() {
 # @cmd Read official SkogAI documents from the official documentation directory
 # @option --document! The name or path of the official document to read (use "list" to see all)
 read_official_documents() {
-  local official_dir="/home/skogix/skogai/docs/official"
+  local official_dir="/home/skogix/skogai/docs/"
 
   if [[ "$argc_document" == "list" ]]; then
     ls -la "$official_dir" >>"$LLM_OUTPUT"
   else
-    cat "$official_dir/$argc_document" >>"$LLM_OUTPUT" 2>/dev/null ||
-      cat "$official_dir/$argc_document.md" >>"$LLM_OUTPUT"
+    cat "$official_dir/$argc_document" >>"$LLM_OUTPUT"
   fi
 }
 
@@ -44,27 +43,27 @@ list_docs() {
 
     if [[ "$argc_recursive" == "1" ]]; then
       case "$type" in
-        files)
-          find "$DOCS_DIR" -type f -name "$pattern" | sort
-          ;;
-        dirs)
-          find "$DOCS_DIR" -type d -name "$pattern" | sort
-          ;;
-        all)
-          find "$DOCS_DIR" -name "$pattern" | sort
-          ;;
+      files)
+        find "$DOCS_DIR" -type f -name "$pattern" | sort
+        ;;
+      dirs)
+        find "$DOCS_DIR" -type d -name "$pattern" | sort
+        ;;
+      all)
+        find "$DOCS_DIR" -name "$pattern" | sort
+        ;;
       esac
     else
       case "$type" in
-        files)
-          find "$DOCS_DIR" -maxdepth 1 -type f -name "$pattern" | sort
-          ;;
-        dirs)
-          find "$DOCS_DIR" -maxdepth 1 -type d -name "$pattern" | sort
-          ;;
-        all)
-          find "$DOCS_DIR" -maxdepth 1 -name "$pattern" | sort
-          ;;
+      files)
+        find "$DOCS_DIR" -maxdepth 1 -type f -name "$pattern" | sort
+        ;;
+      dirs)
+        find "$DOCS_DIR" -maxdepth 1 -type d -name "$pattern" | sort
+        ;;
+      all)
+        find "$DOCS_DIR" -maxdepth 1 -name "$pattern" | sort
+        ;;
       esac
     fi
 
@@ -89,7 +88,7 @@ summarize_doc() {
     echo "=== Summary of $argc_doc_path ==="
     echo
 
-    local total_lines=$(wc -l < "$doc_file")
+    local total_lines=$(wc -l <"$doc_file")
     echo "Total lines: $total_lines"
     echo
 
@@ -150,11 +149,11 @@ search_docs() {
 
     if [[ "$argc_headers_only" == "1" ]]; then
       # Search only in markdown headers
-      find "$DOCS_DIR" -type f -name "*.md" -exec grep -H -n -E "^#{1,6} .*$argc_query" {} \; 2>/dev/null || \
+      find "$DOCS_DIR" -type f -name "*.md" -exec grep -H -n -E "^#{1,6} .*$argc_query" {} \; 2>/dev/null ||
         echo "No matches found in headers"
     else
       # Full text search
-      grep $grep_opts "$argc_query" "$DOCS_DIR" 2>/dev/null || \
+      grep $grep_opts "$argc_query" "$DOCS_DIR" 2>/dev/null ||
         echo "No matches found"
     fi
   } >>"$LLM_OUTPUT"
@@ -176,11 +175,11 @@ doc_stats() {
       echo "=== Statistics for $argc_doc_path ==="
       echo
 
-      local line_count=$(wc -l < "$doc_file")
-      local word_count=$(wc -w < "$doc_file")
+      local line_count=$(wc -l <"$doc_file")
+      local word_count=$(wc -w <"$doc_file")
       local header_count=$(grep -c -E "^#{1,6} " "$doc_file" 2>/dev/null || echo 0)
       local code_block_count=$(grep -c "^\`\`\`" "$doc_file" 2>/dev/null || echo 0)
-      code_block_count=$((code_block_count / 2))  # Divide by 2 for opening/closing pairs
+      code_block_count=$((code_block_count / 2)) # Divide by 2 for opening/closing pairs
 
       echo "Line count:       $line_count"
       echo "Word count:       $word_count"
@@ -208,8 +207,8 @@ doc_stats() {
         local total_words=0
 
         while IFS= read -r file; do
-          total_lines=$((total_lines + $(wc -l < "$file")))
-          total_words=$((total_words + $(wc -w < "$file")))
+          total_lines=$((total_lines + $(wc -l <"$file")))
+          total_words=$((total_words + $(wc -w <"$file")))
         done < <(find "$DOCS_DIR" -type f -name "*.md")
 
         echo "Total lines:      $total_lines"

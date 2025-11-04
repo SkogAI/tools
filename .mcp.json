@@ -3,6 +3,18 @@
     "tools": {
       "command": "npx",
       "args": ["mcp-llm-functions", "/home/skogix/skogai/tools"]
+    },
+    "loremaster": {
+      "command": "npx",
+      "args": ["mcp-llm-functions", "/home/skogix/skogai/tools", "loremaster"]
+    },
+    "librarian": {
+      "command": "npx",
+      "args": ["mcp-llm-functions", "/home/skogix/skogai/tools", "librarian"]
+    },
+    "skogai-memory": {
+      "command": "uvx",
+      "args": ["basic-memory", "mcp"]
     }
   }
 }
