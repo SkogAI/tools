@@ -8,7 +8,7 @@ set -e
 
 main() {
   # Run skogparse with the text and send output to LLM_OUTPUT
-  skogparse "$argc_text" >>"$LLM_OUTPUT"
+  skogparse $argc_text >>"$LLM_OUTPUT"
 }
 
 eval "$(argc --argc-eval "$0" "$@")"
