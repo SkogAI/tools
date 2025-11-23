@@ -19,6 +19,11 @@ _choice_doc_all() {
     find "$DOCS_DIR" -type f -printf "%P\n" 2>/dev/null | sort
 }
 
+# Common code block languages
+_choice_lang() {
+    echo -e "bash\nsh\npython\njs\njavascript\nts\ntypescript\ngo\nrust\njava\nc\ncpp\nruby\nphp\nyaml\njson\ntoml\nsql\nhtml\ncss"
+}
+
 # @cmd Create a new file at the specified path with contents.
 # @option --path! The path where the file should be created
 # @option --contents! The contents of the file
@@ -36,20 +41,11 @@ read_official_documents() {
 }
 
 # @cmd Read a document with optional line range
-# @option --doc-path[`_choice_doc`] Path to document relative to docs/ (default: README.md)
+# @option --doc-path=README.md[`_choice_doc`] Path to document relative to docs/
 # @option --start <INT> Starting line number
 # @option --end <INT> Ending line number
 read_doc() {
-  local doc_file="$DOCS_DIR/${argc_doc_path:-README.md}"
-  local total_lines
-  total_lines=$(wc -l <"$doc_file")
-
-  if [[ -n "$argc_start" && "$argc_start" -gt "$total_lines" ]]; then
-    return 1
-  fi
-  if [[ -n "$argc_end" && "$argc_end" -gt "$total_lines" ]]; then
-    return 1
-  fi
+  local doc_file="$DOCS_DIR/$argc_doc_path"
 
   if [[ -n "$argc_start" && -n "$argc_end" ]]; then
     sed -n "${argc_start},${argc_end}p" "$doc_file" >>"$LLM_OUTPUT"
@@ -63,15 +59,13 @@ read_doc() {
 }
 
 # @cmd Show recently modified documents
-# @option --count <INT> Number of files to show (default: 10)
+# @option --count=10 <INT> Number of files to show
 # @option --days <INT> Only files modified within N days
 recent_docs() {
-  local count="${argc_count:-10}"
-
   if [[ -n "$argc_days" ]]; then
-    find "$DOCS_DIR" -type f -name "*.md" -mtime -"$argc_days" -printf "%T@\t%P\n" 2>/dev/null | sort -rn | head -n "$count" | cut -f2 >>"$LLM_OUTPUT"
+    find "$DOCS_DIR" -type f -name "*.md" -mtime -"$argc_days" -printf "%T@\t%P\n" 2>/dev/null | sort -rn | head -n "$argc_count" | cut -f2 >>"$LLM_OUTPUT"
   else
-    find "$DOCS_DIR" -type f -name "*.md" -printf "%T@\t%P\n" 2>/dev/null | sort -rn | head -n "$count" | cut -f2 >>"$LLM_OUTPUT"
+    find "$DOCS_DIR" -type f -name "*.md" -printf "%T@\t%P\n" 2>/dev/null | sort -rn | head -n "$argc_count" | cut -f2 >>"$LLM_OUTPUT"
   fi
 }
 
@@ -92,34 +86,32 @@ compare_docs() {
 
 # @cmd Extract code blocks from a markdown document
 # @option --doc-path![`_choice_doc`] Path to document relative to docs/
-# @option --lang Filter by language (e.g., "bash", "python", "js")
+# @option --lang[?`_choice_lang`] Filter by language (e.g., "bash", "python", "js")
 extract_code_blocks() {
   local doc_file="$DOCS_DIR/$argc_doc_path"
 
   if [[ -n "$argc_lang" ]]; then
     awk -v lang="$argc_lang" '
-      /^```'"$argc_lang"'/ { capture=1; next }
-      /^```/ && capture { capture=0; print "---"; next }
+      $0 ~ "^```" lang { capture=1; next }
+      /^```/ && capture { capture=0; next }
       capture { print }
     ' "$doc_file" >>"$LLM_OUTPUT"
   else
     awk '
-      /^```[a-zA-Z]/ { lang=$0; gsub(/```/, "", lang); print "=== " lang " ==="; capture=1; next }
-      /^```/ && capture { capture=0; print ""; next }
+      /^```[a-zA-Z]/ { capture=1; next }
+      /^```/ && capture { capture=0; next }
       capture { print }
     ' "$doc_file" >>"$LLM_OUTPUT"
   fi
 }
 
 # @cmd Show documentation tree structure
-# @option --depth <INT> Maximum depth to display (default: 3)
+# @option --depth=3 <INT> Maximum depth to display
 doc_tree() {
-  local depth="${argc_depth:-3}"
-
   if command -v tree &>/dev/null; then
-    tree -L "$depth" --noreport "$DOCS_DIR" >>"$LLM_OUTPUT"
+    tree -L "$argc_depth" --noreport "$DOCS_DIR" >>"$LLM_OUTPUT"
   else
-    find "$DOCS_DIR" -maxdepth "$depth" -printf "%P\n" | sort >>"$LLM_OUTPUT"
+    find "$DOCS_DIR" -maxdepth "$argc_depth" -printf "%P\n" | sort >>"$LLM_OUTPUT"
   fi
 }
 
@@ -141,17 +133,14 @@ concat_docs() {
 }
 
 # @cmd Find TODOs and FIXMEs in documentation
-# @option --pattern Custom pattern to search for (default: TODO|FIXME|XXX|HACK)
+# @option --pattern="TODO|FIXME|XXX|HACK" Custom pattern to search for
 find_todos() {
-  local pattern="${argc_pattern:-TODO|FIXME|XXX|HACK}"
-  grep -r -n -E "$pattern" "$DOCS_DIR" --include="*.md" 2>/dev/null >>"$LLM_OUTPUT"
+  grep -r -n -E "$argc_pattern" "$DOCS_DIR" --include="*.md" 2>/dev/null >>"$LLM_OUTPUT"
 }
 
 # @cmd Count words in documents (useful for content planning)
-# @option --sort-by[name|words|lines] Sort results by (default: words)
+# @option --sort-by[=words|name|lines] Sort results by
 word_counts() {
-  local sort_by="${argc_sort_by:-words}"
-
   {
     while IFS= read -r file; do
       local relpath="${file#$DOCS_DIR/}"
@@ -160,7 +149,7 @@ word_counts() {
       lines=$(wc -l <"$file")
       printf "%s\t%d\t%d\n" "$relpath" "$words" "$lines"
     done < <(find "$DOCS_DIR" -type f -name "*.md" | sort)
-  } | case "$sort_by" in
+  } | case "$argc_sort_by" in
     words) sort -t$'\t' -k2 -n -r ;;
     lines) sort -t$'\t' -k3 -n -r ;;
     *) cat ;;
@@ -168,36 +157,32 @@ word_counts() {
 }
 
 # @cmd List all documentation files with optional filtering
-# @option --pattern File pattern to match (e.g., "*.md", "argc*")
-# @option --type[files|dirs|all] What to list (default: files)
+# @option --pattern=* File pattern to match (e.g., "*.md", "argc*")
+# @option --type[=files|dirs|all] What to list
 # @flag --recursive Include subdirectories
 list_docs() {
-  local type="${argc_type:-files}"
-  local pattern="${argc_pattern:-*}"
   local depth_opt=""
-
   [[ "$argc_recursive" != "1" ]] && depth_opt="-maxdepth 1"
 
-  case "$type" in
-    files) find "$DOCS_DIR" $depth_opt -type f -name "$pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
-    dirs)  find "$DOCS_DIR" $depth_opt -type d -name "$pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
-    all)   find "$DOCS_DIR" $depth_opt -name "$pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
+  case "$argc_type" in
+    files) find "$DOCS_DIR" $depth_opt -type f -name "$argc_pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
+    dirs)  find "$DOCS_DIR" $depth_opt -type d -name "$argc_pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
+    all)   find "$DOCS_DIR" $depth_opt -name "$argc_pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
   esac
 }
 
 # @cmd Show summary of a document (first N lines + last 10 lines)
 # @option --doc-path![`_choice_doc`] Path to document relative to docs/
-# @option --lines <INT> Number of preview lines from start (default: 20)
+# @option --lines=20 <INT> Number of preview lines from start
 summarize_doc() {
   local doc_file="$DOCS_DIR/$argc_doc_path"
-  local preview_lines="${argc_lines:-20}"
   local total_lines
   total_lines=$(wc -l <"$doc_file")
 
   {
-    head -n "$preview_lines" -- "$doc_file"
+    head -n "$argc_lines" -- "$doc_file"
 
-    if [[ $total_lines -gt $((preview_lines + 10)) ]]; then
+    if [[ $total_lines -gt $((argc_lines + 10)) ]]; then
       echo "..."
       tail -n 10 -- "$doc_file"
     fi
