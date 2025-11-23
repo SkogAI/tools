@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Rules (MUST READ FIRST)
+
+@docs/rules.md
+
 ## Documentation
 
 @docs/agent.md

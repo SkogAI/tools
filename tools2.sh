@@ -5,7 +5,24 @@ set -e
 # @env SKOGAI=/home/skogix/skogai SkogAI root dir
 
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-DOCS_DIR="/home/skogix/skogai/docs"
+DOCS_DIR="${SKOGAI:-/home/skogix/skogai}/docs"
+
+# === Choice Functions ===
+
+# List all docs for argc choice validation
+_choice_doc() {
+    find "$DOCS_DIR" -type f -name "*.md" -printf "%P\n" 2>/dev/null | sort
+}
+
+# List all docs including non-md files
+_choice_doc_all() {
+    find "$DOCS_DIR" -type f -printf "%P\n" 2>/dev/null | sort
+}
+
+# Common code block languages
+_choice_lang() {
+    echo -e "bash\nsh\npython\njs\njavascript\nts\ntypescript\ngo\nrust\njava\nc\ncpp\nruby\nphp\nyaml\njson\ntoml\nsql\nhtml\ncss"
+}
 
 # @cmd Create a new file at the specified path with contents.
 # @option --path! The path where the file should be created
@@ -18,202 +35,227 @@ fs_create() {
 }
 
 # @cmd Read official SkogAI documents from the official documentation directory
-# @option --document! The name or path of the official document to read (use "list" to see all)
+# @option --document![`_choice_doc_all`] The name or path of the official document to read
 read_official_documents() {
-  local official_dir="/home/skogix/skogai/docs/"
+  cat -- "$DOCS_DIR/$argc_document" >>"$LLM_OUTPUT"
+}
 
-  if [[ "$argc_document" == "list" ]]; then
-    ls -la "$official_dir" >>"$LLM_OUTPUT"
+# @cmd Read a document with optional line range
+# @option --doc-path=README.md[`_choice_doc`] Path to document relative to docs/
+# @option --start <INT> Starting line number
+# @option --end <INT> Ending line number
+read_doc() {
+  local doc_file="$DOCS_DIR/$argc_doc_path"
+
+  if [[ -n "$argc_start" && -n "$argc_end" ]]; then
+    sed -n "${argc_start},${argc_end}p" "$doc_file" >>"$LLM_OUTPUT"
+  elif [[ -n "$argc_start" ]]; then
+    tail -n "+${argc_start}" "$doc_file" >>"$LLM_OUTPUT"
+  elif [[ -n "$argc_end" ]]; then
+    head -n "$argc_end" "$doc_file" >>"$LLM_OUTPUT"
   else
-    cat "$official_dir/$argc_document" >>"$LLM_OUTPUT"
+    cat -- "$doc_file" >>"$LLM_OUTPUT"
   fi
+}
+
+# @cmd Show recently modified documents
+# @option --count=10 <INT> Number of files to show
+# @option --days <INT> Only files modified within N days
+recent_docs() {
+  if [[ -n "$argc_days" ]]; then
+    find "$DOCS_DIR" -type f -name "*.md" -mtime -"$argc_days" -printf "%T@\t%P\n" 2>/dev/null | sort -rn | head -n "$argc_count" | cut -f2 >>"$LLM_OUTPUT"
+  else
+    find "$DOCS_DIR" -type f -name "*.md" -printf "%T@\t%P\n" 2>/dev/null | sort -rn | head -n "$argc_count" | cut -f2 >>"$LLM_OUTPUT"
+  fi
+}
+
+# @cmd Compare two documents side by side
+# @option --doc1![`_choice_doc`] First document path (relative to docs/)
+# @option --doc2![`_choice_doc`] Second document path (relative to docs/)
+# @flag --unified Show unified diff format
+compare_docs() {
+  local file1="$DOCS_DIR/$argc_doc1"
+  local file2="$DOCS_DIR/$argc_doc2"
+
+  if [[ "$argc_unified" == "1" ]]; then
+    diff -u -- "$file1" "$file2" >>"$LLM_OUTPUT" || true
+  else
+    diff -- "$file1" "$file2" >>"$LLM_OUTPUT" || true
+  fi
+}
+
+# @cmd Extract code blocks from a markdown document
+# @option --doc-path![`_choice_doc`] Path to document relative to docs/
+# @option --lang[?`_choice_lang`] Filter by language (e.g., "bash", "python", "js")
+extract_code_blocks() {
+  local doc_file="$DOCS_DIR/$argc_doc_path"
+
+  if [[ -n "$argc_lang" ]]; then
+    awk -v lang="$argc_lang" '
+      $0 ~ "^```" lang { capture=1; next }
+      /^```/ && capture { capture=0; next }
+      capture { print }
+    ' "$doc_file" >>"$LLM_OUTPUT"
+  else
+    awk '
+      /^```[a-zA-Z]/ { capture=1; next }
+      /^```/ && capture { capture=0; next }
+      capture { print }
+    ' "$doc_file" >>"$LLM_OUTPUT"
+  fi
+}
+
+# @cmd Show documentation tree structure
+# @option --depth=3 <INT> Maximum depth to display
+doc_tree() {
+  if command -v tree &>/dev/null; then
+    tree -L "$argc_depth" --noreport "$DOCS_DIR" >>"$LLM_OUTPUT"
+  else
+    find "$DOCS_DIR" -maxdepth "$argc_depth" -printf "%P\n" | sort >>"$LLM_OUTPUT"
+  fi
+}
+
+# @cmd Concatenate multiple documents into one output
+# @option --docs+[`_choice_doc`] List of document paths (relative to docs/)
+# @flag --with-headers Include filename headers between documents
+concat_docs() {
+  for doc in "${argc_docs[@]}"; do
+    local doc_file="$DOCS_DIR/$doc"
+
+    if [[ "$argc_with_headers" == "1" ]]; then
+      echo "# ===== $doc =====" >>"$LLM_OUTPUT"
+      echo >>"$LLM_OUTPUT"
+    fi
+
+    cat -- "$doc_file" >>"$LLM_OUTPUT"
+    echo >>"$LLM_OUTPUT"
+  done
+}
+
+# @cmd Find TODOs and FIXMEs in documentation
+# @option --pattern="TODO|FIXME|XXX|HACK" Custom pattern to search for
+find_todos() {
+  grep -r -n -E "$argc_pattern" "$DOCS_DIR" --include="*.md" 2>/dev/null >>"$LLM_OUTPUT"
+}
+
+# @cmd Count words in documents (useful for content planning)
+# @option --sort-by[=words|name|lines] Sort results by
+word_counts() {
+  {
+    while IFS= read -r file; do
+      local relpath="${file#$DOCS_DIR/}"
+      local words lines
+      words=$(wc -w <"$file")
+      lines=$(wc -l <"$file")
+      printf "%s\t%d\t%d\n" "$relpath" "$words" "$lines"
+    done < <(find "$DOCS_DIR" -type f -name "*.md" | sort)
+  } | case "$argc_sort_by" in
+    words) sort -t$'\t' -k2 -n -r ;;
+    lines) sort -t$'\t' -k3 -n -r ;;
+    *) cat ;;
+  esac >>"$LLM_OUTPUT"
 }
 
 # @cmd List all documentation files with optional filtering
-# @option --pattern File pattern to match (e.g., "*.md", "argc*")
-# @option --type[files|dirs|all] What to list (default: files)
+# @option --pattern=* File pattern to match (e.g., "*.md", "argc*")
+# @option --type[=files|dirs|all] What to list
 # @flag --recursive Include subdirectories
 list_docs() {
-  local type="${argc_type:-files}"
-  local pattern="${argc_pattern:-*}"
+  local depth_opt=""
+  [[ "$argc_recursive" != "1" ]] && depth_opt="-maxdepth 1"
 
-  {
-    echo "=== Documentation Files in $DOCS_DIR ==="
-    echo
-
-    if [[ "$argc_recursive" == "1" ]]; then
-      case "$type" in
-      files)
-        find "$DOCS_DIR" -type f -name "$pattern" | sort
-        ;;
-      dirs)
-        find "$DOCS_DIR" -type d -name "$pattern" | sort
-        ;;
-      all)
-        find "$DOCS_DIR" -name "$pattern" | sort
-        ;;
-      esac
-    else
-      case "$type" in
-      files)
-        find "$DOCS_DIR" -maxdepth 1 -type f -name "$pattern" | sort
-        ;;
-      dirs)
-        find "$DOCS_DIR" -maxdepth 1 -type d -name "$pattern" | sort
-        ;;
-      all)
-        find "$DOCS_DIR" -maxdepth 1 -name "$pattern" | sort
-        ;;
-      esac
-    fi
-
-    echo
-    echo "Use --recursive to include subdirectories"
-  } >>"$LLM_OUTPUT"
+  case "$argc_type" in
+    files) find "$DOCS_DIR" $depth_opt -type f -name "$argc_pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
+    dirs)  find "$DOCS_DIR" $depth_opt -type d -name "$argc_pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
+    all)   find "$DOCS_DIR" $depth_opt -name "$argc_pattern" -printf "%P\n" | sort >>"$LLM_OUTPUT" ;;
+  esac
 }
 
 # @cmd Show summary of a document (first N lines + last 10 lines)
-# @option --doc-path! Path to document relative to docs/
-# @option --lines <INT> Number of preview lines from start (default: 20)
+# @option --doc-path![`_choice_doc`] Path to document relative to docs/
+# @option --lines=20 <INT> Number of preview lines from start
 summarize_doc() {
   local doc_file="$DOCS_DIR/$argc_doc_path"
-  local preview_lines="${argc_lines:-20}"
-
-  if [[ ! -f "$doc_file" ]]; then
-    echo "Error: Document not found: $doc_file" >>"$LLM_OUTPUT"
-    return 1
-  fi
+  local total_lines
+  total_lines=$(wc -l <"$doc_file")
 
   {
-    echo "=== Summary of $argc_doc_path ==="
-    echo
+    head -n "$argc_lines" -- "$doc_file"
 
-    local total_lines=$(wc -l <"$doc_file")
-    echo "Total lines: $total_lines"
-    echo
-
-    echo "--- First $preview_lines lines ---"
-    head -n "$preview_lines" "$doc_file"
-    echo
-
-    if [[ $total_lines -gt $((preview_lines + 10)) ]]; then
+    if [[ $total_lines -gt $((argc_lines + 10)) ]]; then
       echo "..."
-      echo
-      echo "--- Last 10 lines ---"
-      tail -n 10 "$doc_file"
+      tail -n 10 -- "$doc_file"
     fi
   } >>"$LLM_OUTPUT"
 }
 
 # @cmd Extract and display only markdown headers from documents
-# @option --doc-path! Path to document relative to docs/
+# @option --doc-path![`_choice_doc`] Path to document relative to docs/
 # @option --level[1|2|3|4|5|6] Only show headers up to this level
 show_headers() {
   local doc_file="$DOCS_DIR/$argc_doc_path"
 
-  if [[ ! -f "$doc_file" ]]; then
-    echo "Error: Document not found: $doc_file" >>"$LLM_OUTPUT"
-    return 1
+  if [[ -n "$argc_level" ]]; then
+    local pattern="^#{1,$argc_level} "
+    grep -E "$pattern" -- "$doc_file" >>"$LLM_OUTPUT"
+  else
+    grep -E "^#{1,6} " -- "$doc_file" >>"$LLM_OUTPUT"
   fi
-
-  {
-    echo "=== Headers in $argc_doc_path ==="
-    echo
-
-    if [[ -n "$argc_level" ]]; then
-      # Show headers up to specified level
-      local pattern="^#{1,$argc_level} "
-      grep -E "$pattern" "$doc_file" || echo "No headers found at levels 1-$argc_level"
-    else
-      # Show all headers
-      grep -E "^#{1,6} " "$doc_file" || echo "No markdown headers found"
-    fi
-  } >>"$LLM_OUTPUT"
 }
 
 # @cmd Search through documentation content
 # @option --query! Search term or pattern
 # @flag --headers-only Search only in headers
 # @flag --case-sensitive Case-sensitive search
+# @option --context <INT> Lines of context around matches
 search_docs() {
-  local grep_opts="-r -n"
+  local grep_opts=(-r -n --include="*.md")
 
-  # Add case sensitivity option
   if [[ "$argc_case_sensitive" != "1" ]]; then
-    grep_opts="$grep_opts -i"
+    grep_opts+=(-i)
   fi
 
-  {
-    echo "=== Searching for '$argc_query' in $DOCS_DIR ==="
-    echo
+  if [[ -n "$argc_context" ]]; then
+    grep_opts+=(-C "$argc_context")
+  fi
 
-    if [[ "$argc_headers_only" == "1" ]]; then
-      # Search only in markdown headers
-      find "$DOCS_DIR" -type f -name "*.md" -exec grep -H -n -E "^#{1,6} .*$argc_query" {} \; 2>/dev/null ||
-        echo "No matches found in headers"
-    else
-      # Full text search
-      grep $grep_opts "$argc_query" "$DOCS_DIR" 2>/dev/null ||
-        echo "No matches found"
-    fi
-  } >>"$LLM_OUTPUT"
+  if [[ "$argc_headers_only" == "1" ]]; then
+    find "$DOCS_DIR" -type f -name "*.md" -exec grep -H -n -E "^#{1,6} .*$argc_query" {} \; 2>/dev/null >>"$LLM_OUTPUT"
+  else
+    grep "${grep_opts[@]}" -- "$argc_query" "$DOCS_DIR" 2>/dev/null >>"$LLM_OUTPUT"
+  fi
 }
 
 # @cmd Show statistics about documentation
-# @option --doc-path Path to document relative to docs/ (optional, shows all if omitted)
+# @option --doc-path[`_choice_doc`] Path to document relative to docs/ (optional, shows all if omitted)
 doc_stats() {
   if [[ -n "$argc_doc_path" ]]; then
-    # Stats for specific document
     local doc_file="$DOCS_DIR/$argc_doc_path"
-
-    if [[ ! -f "$doc_file" ]]; then
-      echo "Error: Document not found: $doc_file" >>"$LLM_OUTPUT"
-      return 1
-    fi
+    local line_count word_count header_count code_block_count
+    line_count=$(wc -l <"$doc_file")
+    word_count=$(wc -w <"$doc_file")
+    header_count=$(grep -c -E "^#{1,6} " -- "$doc_file" 2>/dev/null || echo 0)
+    code_block_count=$(grep -c "^\`\`\`" -- "$doc_file" 2>/dev/null || echo 0)
+    code_block_count=$((code_block_count / 2))
 
     {
-      echo "=== Statistics for $argc_doc_path ==="
-      echo
-
-      local line_count=$(wc -l <"$doc_file")
-      local word_count=$(wc -w <"$doc_file")
-      local header_count=$(grep -c -E "^#{1,6} " "$doc_file" 2>/dev/null || echo 0)
-      local code_block_count=$(grep -c "^\`\`\`" "$doc_file" 2>/dev/null || echo 0)
-      code_block_count=$((code_block_count / 2)) # Divide by 2 for opening/closing pairs
-
-      echo "Line count:       $line_count"
-      echo "Word count:       $word_count"
-      echo "Header count:     $header_count"
-      echo "Code blocks:      $code_block_count"
+      printf "lines: %d\nwords: %d\nheaders: %d\ncode_blocks: %d\n" \
+        "$line_count" "$word_count" "$header_count" "$code_block_count"
     } >>"$LLM_OUTPUT"
   else
-    # Stats for all documentation
+    local total_files md_files total_dirs total_lines=0 total_words=0
+    total_files=$(find "$DOCS_DIR" -type f | wc -l)
+    md_files=$(find "$DOCS_DIR" -type f -name "*.md" | wc -l)
+    total_dirs=$(find "$DOCS_DIR" -type d | wc -l)
+
+    while IFS= read -r file; do
+      total_lines=$((total_lines + $(wc -l <"$file")))
+      total_words=$((total_words + $(wc -w <"$file")))
+    done < <(find "$DOCS_DIR" -type f -name "*.md")
+
     {
-      echo "=== Documentation Statistics for $DOCS_DIR ==="
-      echo
-
-      local total_files=$(find "$DOCS_DIR" -type f | wc -l)
-      local md_files=$(find "$DOCS_DIR" -type f -name "*.md" | wc -l)
-      local total_dirs=$(find "$DOCS_DIR" -type d | wc -l)
-
-      echo "Total files:      $total_files"
-      echo "Markdown files:   $md_files"
-      echo "Directories:      $total_dirs"
-      echo
-
-      if [[ $md_files -gt 0 ]]; then
-        echo "=== Markdown File Statistics ==="
-        local total_lines=0
-        local total_words=0
-
-        while IFS= read -r file; do
-          total_lines=$((total_lines + $(wc -l <"$file")))
-          total_words=$((total_words + $(wc -w <"$file")))
-        done < <(find "$DOCS_DIR" -type f -name "*.md")
-
-        echo "Total lines:      $total_lines"
-        echo "Total words:      $total_words"
-      fi
+      printf "files: %d\nmd_files: %d\ndirs: %d\nlines: %d\nwords: %d\n" \
+        "$total_files" "$md_files" "$total_dirs" "$total_lines" "$total_words"
     } >>"$LLM_OUTPUT"
   fi
 }
