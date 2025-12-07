@@ -1,0 +1,58 @@
+- [ ] disk-usage show top 10 largest dirs in path, with live dir completion
+- [ ] process-finder find processes by name/port, validate against running processes
+- [ ] memory-hog show processes using >X% memory, validate percentage 1-100
+- [ ] listening-ports list all listening ports with process names
+- [ ] recent-files find files modified in last N hours in dir
+- [ ] container-logs tail logs from container, validate container exists
+- [ ] container-shell quick exec into container with shell choice validation
+- [ ] image-size show image sizes, validate against local images
+- [ ] container-cleanup remove stopped containers, dry-run option
+- [ ] docker-stats-json docker stats as structured json output
+- [ ] branch-age show branches older than N days
+- [ ] commit-files list files changed in commit hash (validate hash exists)
+- [ ] uncommitted show repos with uncommitted changes in directory tree
+- [ ] git-status-all run git status on all repos in dir
+- [ ] branch-cleanup delete merged branches, validate branch names
+- [ ] local-ip get local IPs for interface (validate interface name)
+- [ ] ping-check ping host and return json status
+- [ ] dns-lookup resolve hostname, validate format
+- [ ] port-scan check if ports open on host (validate port range)
+- [ ] curl-time curl with timing breakdown (dns, connect, transfer)
+- [ ] find-duplicate find duplicate files by hash in dir
+- [ ] file-age find files older/newer than N days
+- [ ] extract-archive auto-detect and extract, validate file exists
+- [ ] json-validate validate json file, pretty print
+- [ ] yaml-to-json convert yaml to json with validation
+- [ ] json-to-yaml convert json to yaml with validation
+- [ ] base64-encode encode string to base64
+- [ ] base64-decode decode base64 string with validation
+- [ ] uuid-gen generate uuid v4/v5, validate version choice
+- [ ] hash-file md5/sha256 file, validate algo choice
+- [ ] timestamp-convert unix to human readable and vice versa, validate format
+- [ ] url-encode encode string for url
+- [ ] url-decode decode url-encoded string
+- [ ] node-version-check check if .nvmrc matches current node
+- [ ] python-venv-info show active venv info
+- [ ] npm-outdated-json outdated packages as json
+- [ ] package-size size of node_modules by package
+- [ ] env-diff diff two env files, validate paths
+- [ ] weather weather for city (api call), validate city
+- [ ] currency-convert convert amount between currencies
+- [ ] color-convert hex to rgb to hsl, validate format
+- [ ] regex-test test regex against string
+- [ ] jwt-decode decode jwt token, validate format
+- [ ] symlink-check verify dotfile symlinks are valid
+- [ ] config-backup backup config to timestamped file
+- [ ] ssh-key-list list ssh keys with fingerprints
+- [ ] env-var-check check if required env vars are set
+- [ ] path-inspector show what's in PATH with duplicates highlighted
+- [ ] url-alive check if URL returns 200, validate URL format
+- [ ] ssl-expiry check SSL cert expiry date, validate hostname
+- [ ] json-schema-validate validate json against schema file
+- [ ] markdown-links check markdown for broken links
+- [ ] api-endpoint-test test REST endpoint with method validation
+- [ ] random-word get random word from dict
+- [ ] qr-generate generate qr code for text
+- [ ] password-gen generate password with criteria validation
+- [ ] lorem-ipsum generate N paragraphs
+- [ ] countdown countdown timer in terminal
