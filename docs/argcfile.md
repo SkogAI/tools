@@ -1,6 +1,6 @@
 # Argcfile
 
-The [Argcfile.sh](https://github.com/sigoden/llm-functions/blob/main/Argcfile.sh) is a powerful Bash script designed to streamline the process of managing LLM functions and agents in your AIChat environment.
+The [Argcfile.sh](https://github.com/SkogAI/tools/blob/main/Argcfile.sh) is a powerful Bash script designed to streamline the process of managing LLM functions and agents in your AIChat environment.
 
 We encourage running `Argcfile.sh` using `argc`. Because `argc` provides better autocompletion, it can also be used without trouble on Windows.
 

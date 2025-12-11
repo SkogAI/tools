@@ -8,10 +8,9 @@
 
 @docs/agent.md
 @docs/argcfile.md
-@docs/tool.md
+@docs/tool-development-guide.md
 @docs/environment-variables.md
 @docs/command-runner.md
-@docs/specification.md
 @docs/variables.md
 @docs/bash-best-practices.md
 
@@ -91,4 +90,4 @@ The documentation above covers the detailed architecture, environment variables,
 - **MCP Integration**: Exposes tools via Model Context Protocol for universal access
 - **Build Pipeline**: argc → `build-declarations.sh` → `functions.json` → wrapper scripts
 
-See @docs/tool.md, @docs/agent.md, and @docs/argcfile.md for complete architectural details.
+See @docs/tool-development-guide.md, @docs/agent.md, and @docs/argcfile.md for complete architectural details.

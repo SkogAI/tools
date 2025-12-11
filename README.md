@@ -25,8 +25,8 @@ Make sure you have the following tools installed:
 ### 1. Clone the repository
 
 ```sh
-git clone https://github.com/sigoden/llm-functions
-cd llm-functions
+git clone https://github.com/SkogAI/tools
+cd tools
 ```
 
 ### 2. Build tools and agents
@@ -198,19 +198,19 @@ documents:
   - https://example.com/remote-file.txt
 ```
 
-Refer to [./agents/demo](https://github.com/sigoden/llm-functions/tree/main/agents/demo) for examples of how to implement a agent.
+Refer to [./agents/demo](https://github.com/SkogAI/tools/tree/main/agents/demo) for examples of how to implement a agent.
 
 ## MCP (Model Context Protocol)
 
-- [mcp/server](https://github.com/sigoden/llm-functions/tree/main/mcp/server): Let LLM-Functions tools/agents be used through the Model Context Protocol. 
-- [mcp/bridge](https://github.com/sigoden/llm-functions/tree/main/mcp/bridge): Let external MCP tools be used by LLM-Functions.
+- [mcp/server](https://github.com/SkogAI/tools/tree/main/mcp/server): Let LLM-Functions tools/agents be used through the Model Context Protocol. 
+- [mcp/bridge](https://github.com/SkogAI/tools/tree/main/mcp/bridge): Let external MCP tools be used by LLM-Functions.
 
 ## Documents
 
-- [Tool Guide](https://github.com/sigoden/llm-functions/blob/main/docs/tool.md)
-- [Agent Guide](https://github.com/sigoden/llm-functions/blob/main/docs/agent.md)
-- [Argc Commands](https://github.com/sigoden/llm-functions/blob/main/docs/argcfile.md)
+- [Tool Development Guide](https://github.com/SkogAI/tools/blob/main/docs/tool-development-guide.md)
+- [Agent Guide](https://github.com/SkogAI/tools/blob/main/docs/agent.md)
+- [Argc Commands](https://github.com/SkogAI/tools/blob/main/docs/argcfile.md)
 
 ## License
 
-The project is under the MIT License, Refer to the [LICENSE](https://github.com/sigoden/llm-functions/blob/main/LICENSE) file for detailed information.
+The project is under the MIT License, Refer to the [LICENSE](https://github.com/SkogAI/tools/blob/main/LICENSE) file for detailed information.

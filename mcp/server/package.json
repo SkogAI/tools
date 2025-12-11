@@ -4,10 +4,10 @@
   "description": "Let LLM-functions tools/agents be used through the Model Context Protocol",
   "license": "MIT",
   "author": "sigoden <sigoden@gmail.com>",
-  "homepage": "https://github.com/sigoden/llm-functions/tree/main/mcp/server",
+  "homepage": "https://github.com/SkogAI/tools/tree/main/mcp/server",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sigoden/llm-functions.git",
+    "url": "git+https://github.com/SkogAI/tools.git",
     "directory": "mcp/server"
   },
   "publishConfig": {

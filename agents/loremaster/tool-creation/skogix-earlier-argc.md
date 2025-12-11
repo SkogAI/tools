@@ -121,18 +121,18 @@ With these simple steps, you're ready to leverage Argc and create robust command
 
 Comment tags are standard Bash comments prefixed with `@` and a specific tag. They provide instructions to Argc for configuring your script's functionalities.
 
-| Tag                                             | Description                           |
-| :---------------------------------------------- | ------------------------------------- |
-| [`@describe`](./docs/specification.md#describe) | Sets the description for the command. |
-| [`@cmd`](./docs/specification.md#cmd)           | Defines a subcommand.                 |
-| [`@alias`](./docs/specification.md#alias)       | Sets aliases for the subcommand.      |
-| [`@arg`](./docs/specification.md#arg)           | Defines a positional argument.        |
-| [`@option`](./docs/specification.md#option)     | Defines an option argument.           |
-| [`@flag`](./docs/specification.md#flag)         | Defines a flag argument.              |
-| [`@env`](./docs/specification.md#env)           | Defines an environment variable.      |
-| [`@meta`](./docs/specification.md#meta)         | Adds metadata.                        |
+| Tag                                                            | Description                           |
+| :------------------------------------------------------------- | ------------------------------------- |
+| [`@describe`](../../../docs/tool-development-guide.md#describe) | Sets the description for the command. |
+| [`@cmd`](../../../docs/tool-development-guide.md#cmd)           | Defines a subcommand.                 |
+| [`@alias`](../../../docs/tool-development-guide.md#alias)       | Sets aliases for the subcommand.      |
+| [`@arg`](../../../docs/tool-development-guide.md#arg)           | Defines a positional argument.        |
+| [`@option`](../../../docs/tool-development-guide.md#option)     | Defines an option argument.           |
+| [`@flag`](../../../docs/tool-development-guide.md#flag)         | Defines a flag argument.              |
+| [`@env`](../../../docs/tool-development-guide.md#env)           | Defines an environment variable.      |
+| [`@meta`](../../../docs/tool-development-guide.md#meta)         | Adds metadata.                        |
 
-See [specification](https://github.com/sigoden/argc/blob/main/docs/specification.md) for the grammar and usage of all the comment tags.
+See [tool development guide](../../../docs/tool-development-guide.md) for complete documentation and [argc specification](https://github.com/sigoden/argc/blob/main/docs/specification.md) for the upstream grammar reference.
 
 ## Argc-build
 
