@@ -1,0 +1,321 @@
+[
+  {
+    "name": "manage",
+    "description": "🔮 Manage that lore yao!",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    },
+    "agent": true
+  },
+  {
+    "name": "list_books",
+    "description": "🔮 List them books yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "type": "string",
+          "description": "Filter books by name pattern"
+        }
+      },
+      "required": []
+    },
+    "agent": true
+  },
+  {
+    "name": "show_book",
+    "description": "🔮 Show them books yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "book": {
+          "type": "string",
+          "description": "Book name to show. Use \"list\" to see all books."
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format",
+          "enum": [
+            "json",
+            "yaml"
+          ]
+        }
+      },
+      "required": [
+        "book"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "list_entries",
+    "description": "🔮 List them entries yao",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    },
+    "agent": true
+  },
+  {
+    "name": "show_entry",
+    "description": "🔮 Show them entries yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "type": "string",
+          "description": "Entry ID to show"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format",
+          "enum": [
+            "json",
+            "yaml"
+          ]
+        }
+      },
+      "required": [
+        "entry"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "read_book_entries",
+    "description": "🔮 Read all entries in a book yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "book": {
+          "type": "string",
+          "description": "Book to read entries from"
+        },
+        "format": {
+          "type": "string",
+          "description": "Output format",
+          "enum": [
+            "json",
+            "yaml"
+          ]
+        }
+      },
+      "required": [
+        "book"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "create_entry",
+    "description": "🔮 Create new entry yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Entry title"
+        },
+        "category": {
+          "type": "string",
+          "description": "Entry category"
+        }
+      },
+      "required": [
+        "title",
+        "category"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "create_book",
+    "description": "🔮 Create new book yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Book title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Book description"
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "add_to_book",
+    "description": "🔮 Add entry to book yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "type": "string",
+          "description": "Entry to add"
+        },
+        "book": {
+          "type": "string",
+          "description": "Book to add to"
+        }
+      },
+      "required": [
+        "entry",
+        "book"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "link_to_persona",
+    "description": "🔮 Link book to persona yao",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "book": {
+          "type": "string",
+          "description": "Book to link"
+        },
+        "persona": {
+          "type": "string",
+          "description": "Persona to link to"
+        }
+      },
+      "required": [
+        "book",
+        "persona"
+      ]
+    },
+    "agent": true
+  },
+  {
+    "name": "fs_cat",
+    "description": "Read the contents of a file at the specified path.\nUse this when you need to examine the contents of an existing file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The path of the file to read"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fs_ls",
+    "description": "List all files and directories at the specified path.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The path of the directory to list"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fs_mkdir",
+    "description": "Create a new directory at the specified path.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The path of the directory to create"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fs_patch",
+    "description": "Apply a patch to a file at the specified path.\nThis can be used to edit the file, without having to rewrite the whole file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The path of the file to apply to"
+        },
+        "contents": {
+          "type": "string",
+          "description": "The patch to apply to the file\n\nHere is an example of a patch block that can be applied to modify the file to request the user's name:\n--- a/hello.py\n+++ b/hello.py\n@@ ... @@\n def hello():\n-    print(\"Hello World\")\n+    name = input(\"What is your name? \")\n+    print(f\"Hello {name}\")"
+        }
+      },
+      "required": [
+        "path",
+        "contents"
+      ]
+    }
+  },
+  {
+    "name": "fs_rm",
+    "description": "Remove the file or directory at the specified path.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The path of the file or directory to remove"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    }
+  },
+  {
+    "name": "fs_write",
+    "description": "Write the full file contents to a file at the specified path.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The path of the file to write to"
+        },
+        "contents": {
+          "type": "string",
+          "description": "The full contents to write to the file"
+        }
+      },
+      "required": [
+        "path",
+        "contents"
+      ]
+    }
+  },
+  {
+    "name": "execute_command",
+    "description": "Execute the shell command.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "The command to execute."
+        }
+      },
+      "required": [
+        "command"
+      ]
+    }
+  }
+]

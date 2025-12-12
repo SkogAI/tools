@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "skogai-tools": {
+      "command": "npx",
+      "args": [
+        "mcp-llm-functions",
+        "/home/skogix/skogai/tools"
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "get_ipinfo",
+    "description": "Get the ip info",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    },
+    "agent": true
+  },
+  {
+    "name": "fizz",
+    "description": "Classic FizzBuzz implementation - prints numbers 1 to max, replacing multiples of 3 with 'Fizz', multiples of 5 with 'Buzz', and multiples of both with 'FizzBuzz'",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "int": {
+          "type": "integer",
+          "description": "The amounts of numbers to print"
+        }
+      },
+      "required": [
+        "int"
+      ]
+    }
+  },
+  {
+    "name": "execute_command",
+    "description": "Execute the shell command.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "The command to execute."
+        }
+      },
+      "required": [
+        "command"
+      ]
+    }
+  }
+]

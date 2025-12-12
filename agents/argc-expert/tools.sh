@@ -27,34 +27,34 @@ create_script() {
     ;;
   esac
 
-  echo "Created argc script: $script_name" >> "$LLM_OUTPUT"
+  echo "Created argc script: $script_name" >>"$LLM_OUTPUT"
 }
 
 # @cmd Validate argc script syntax
 # @arg script_path! Path to the argc script to validate
 validate_script() {
   if [[ ! -f "$argc_script_path" ]]; then
-    echo "Error: Script not found: $argc_script_path" >> "$LLM_OUTPUT"
+    echo "Error: Script not found: $argc_script_path" >>"$LLM_OUTPUT"
     return 1
   fi
 
-  echo "Validating argc script: $argc_script_path" >> "$LLM_OUTPUT"
+  echo "Validating argc script: $argc_script_path" >>"$LLM_OUTPUT"
 
   # Check for required elements
   if ! grep -q "eval.*argc.*argc-eval" "$argc_script_path"; then
-    echo "Warning: Missing argc evaluation line" >> "$LLM_OUTPUT"
+    echo "Warning: Missing argc evaluation line" >>"$LLM_OUTPUT"
   fi
 
   # Check comment tag syntax
   grep -n "^# @" "$argc_script_path" | while read -r line; do
-    echo "Found tag: $line" >> "$LLM_OUTPUT"
+    echo "Found tag: $line" >>"$LLM_OUTPUT"
   done
 
   # Try to parse with argc
   if command -v argc >/dev/null 2>&1; then
-    argc --argc-help "$argc_script_path" >/dev/null 2>&1 && echo "✓ Script parses correctly" >> "$LLM_OUTPUT" || echo "✗ Script has parsing errors" >> "$LLM_OUTPUT"
+    argc --argc-help "$argc_script_path" >/dev/null 2>&1 && echo "✓ Script parses correctly" >>"$LLM_OUTPUT" || echo "✗ Script has parsing errors" >>"$LLM_OUTPUT"
   else
-    echo "Note: argc not installed, cannot validate parsing" >> "$LLM_OUTPUT"
+    echo "Note: argc not installed, cannot validate parsing" >>"$LLM_OUTPUT"
   fi
 }
 
@@ -91,7 +91,7 @@ EOF
     fi
 
     echo "}"
-  } >> "$LLM_OUTPUT"
+  } >>"$LLM_OUTPUT"
 }
 
 # @cmd Show argc best practices
@@ -150,7 +150,7 @@ debug_variables() {
         ;;
       esac
     done
-  } >> "$LLM_OUTPUT"
+  } >>"$LLM_OUTPUT"
 }
 
 create_basic_template() {
@@ -172,15 +172,15 @@ main() {
         echo "Output: ${argc_output:-stdout}"
         echo "Dry run: ${argc_dry_run:-0}"
     fi
-    
+
     # Your code here
     echo "Processing: $argc_input"
-    
+
     if [[ "$argc_dry_run" == "1" ]]; then
         echo "Dry run - no changes made"
         return 0
     fi
-    
+
     # Actual processing logic
 }
 
@@ -198,7 +198,7 @@ set -e
 
 # @describe DESCRIPTION_PLACEHOLDER
 # @meta version 1.0.0
-# @meta require-tools git,curl
+# @meta require-tools git
 
 # @cmd Process files
 # @option --input!           Input directory
@@ -260,7 +260,7 @@ main() {
         echo "Error: param1 is required" >&2
         exit 1
     fi
-    
+
     # Process
     local result=""
     if [[ "$argc_enable_feature" == "1" ]]; then
@@ -268,11 +268,11 @@ main() {
     else
         result="Basic processing of: $argc_param1"
     fi
-    
+
     if [[ -n "$argc_param2" ]]; then
         result="$result, param2: $argc_param2"
     fi
-    
+
     # Output to LLM
     echo "$result" >> "$LLM_OUTPUT"
 }
@@ -324,7 +324,7 @@ EOF
 }
 
 show_syntax_practices() {
-  cat <<'EOF' >> "$LLM_OUTPUT"
+  cat <<'EOF' >>"$LLM_OUTPUT"
 === Argc Syntax Best Practices ===
 
 1. Comment Tag Placement:
@@ -361,7 +361,7 @@ EOF
 }
 
 show_organization_practices() {
-  cat <<'EOF' >> "$LLM_OUTPUT"
+  cat <<'EOF' >>"$LLM_OUTPUT"
 === Argc Organization Best Practices ===
 
 1. Function Structure:
@@ -395,7 +395,7 @@ set -e
 # @option --input! Input file
 cmd1() { ... }
 
-# @cmd Secondary command  
+# @cmd Secondary command
 # @option --output Output file
 cmd2() { ... }
 
@@ -407,7 +407,7 @@ EOF
 }
 
 show_validation_practices() {
-  cat <<'EOF' >> "$LLM_OUTPUT"
+  cat <<'EOF' >>"$LLM_OUTPUT"
 === Argc Validation Best Practices ===
 
 1. Input Validation:
@@ -437,13 +437,13 @@ main() {
         echo "Error: Input file not found: $argc_input" >&2
         exit 1
     fi
-    
+
     # Validate numeric range
     if [[ "$argc_count" -lt 1 || "$argc_count" -gt 100 ]]; then
         echo "Error: count must be between 1 and 100" >&2
         exit 1
     fi
-    
+
     # Check required tools
     if ! command -v jq >/dev/null 2>&1; then
         echo "Error: jq is required but not installed" >&2
@@ -454,7 +454,7 @@ EOF
 }
 
 show_completion_practices() {
-  cat <<'EOF' >> "$LLM_OUTPUT"
+  cat <<'EOF' >>"$LLM_OUTPUT"
 === Argc Completion Best Practices ===
 
 1. Choice Functions:
@@ -492,7 +492,7 @@ EOF
 }
 
 show_performance_practices() {
-  cat <<'EOF' >> "$LLM_OUTPUT"
+  cat <<'EOF' >>"$LLM_OUTPUT"
 === Argc Performance Best Practices ===
 
 1. Script Startup:
