@@ -87,7 +87,7 @@ Use `# @describe`, `# @option`, and `# @flag` comments to define your tool's par
   - `--<flag-name>`: The name of the flag (use kebab-case).
   - `<description>`: A description of the flag.
 
-**Example ([tools/demo_sh.sh](https://github.com/sigoden/llm-functions/blob/main/tools/demo_sh.sh)):**
+**Example ([tools/demo_sh.sh](https://github.com/SkogAI/tools/blob/main/tools/demo_sh.sh)):**
 
 ```sh file=tools/demo_sh.sh
 #!/usr/bin/env bash

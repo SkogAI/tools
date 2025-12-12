@@ -178,7 +178,6 @@ argc run@tool your_tool.sh '{"name":"Alice","count":3}'
 
 ## See Also
 
-- `specification.md` - Complete argc syntax reference
+- `tool-development-guide.md` - Complete tool creation guide with argc syntax reference
 - `variables.md` - Full argc variable system
 - `environment-variables.md` - LLM framework environment variables
-- `tool.md` - General tool creation guide

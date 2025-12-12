@@ -6,14 +6,19 @@
 
 ## Documentation
 
-@docs/agent.md
-@docs/argcfile.md
-@docs/tool.md
-@docs/environment-variables.md
-@docs/command-runner.md
-@docs/specification.md
-@docs/variables.md
-@docs/bash-best-practices.md
+### Core References
+
+@docs/rules.md - Critical tool development rules (MUST READ FIRST)
+@docs/tool-development-guide.md - Argc syntax reference and quick examples
+@docs/bash-best-practices.md - Detailed patterns, examples, and common mistakes
+
+### System Documentation
+
+@docs/agent.md - Agent structure and configuration
+@docs/argcfile.md - Build system and MCP integration
+@docs/environment-variables.md - LLM framework environment variables
+@docs/command-runner.md - Using argc as command runner
+@docs/variables.md - Argc variable system
 
 ## Quick Reference
 
@@ -91,4 +96,4 @@ The documentation above covers the detailed architecture, environment variables,
 - **MCP Integration**: Exposes tools via Model Context Protocol for universal access
 - **Build Pipeline**: argc → `build-declarations.sh` → `functions.json` → wrapper scripts
 
-See @docs/tool.md, @docs/agent.md, and @docs/argcfile.md for complete architectural details.
+See @docs/tool-development-guide.md for argc syntax reference, @docs/agent.md for agent structure, and @docs/argcfile.md for build system details.

@@ -3,8 +3,7 @@
 
 ## Core Documentation (HIGHEST PRIORITY)
 READ/ARGC_AI_GUIDE.md
-docs/tool.md
-docs/specification.md
+docs/tool-development-guide.md
 
 ## Secondary Documentation
 docs/argcfile.md

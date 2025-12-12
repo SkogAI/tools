@@ -1,0 +1,12 @@
+argc-expert
+blacksmith
+claude
+coder
+demo
+documentor
+git-flow
+json-viewer
+librarian
+loremaster
+sql
+todo

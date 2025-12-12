@@ -4,10 +4,10 @@
   "description": "Let MCP tools be used by LLM functions",
   "license": "MIT",
   "author": "sigoden <sigoden@gmail.com>",
-  "homepage": "https://github.com/sigoden/llm-functions/tree/main/mcp/bridge",
+  "homepage": "https://github.com/SkogAI/tools/tree/main/mcp/bridge",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sigoden/llm-functions.git",
+    "url": "git+https://github.com/SkogAI/tools.git",
     "directory": "mcp/bridge"
   },
   "private": true,
