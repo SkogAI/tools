@@ -29,11 +29,9 @@ search_wolframalpha.sh
 send_mail.sh
 send_twilio.sh
 skogai-grep.sh
-skogai.sh
 skogparse.sh
 test_greeter.sh
 validate-type.sh
-wawa.sh
 web_search_aichat.sh
 web_search_perplexity.sh
 web_search_tavily.sh

@@ -1,5 +1,20 @@
 [
   {
+    "name": "doc_stats",
+    "description": "Show statistics about documentation",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "doc_path": {
+          "type": "string",
+          "description": "Path to document relative to docs/ (optional, shows all if omitted)"
+        }
+      },
+      "required": []
+    },
+    "agent": true
+  },
+  {
     "name": "fs_mkdir",
     "description": "Create a new directory at the specified path.",
     "parameters": {
